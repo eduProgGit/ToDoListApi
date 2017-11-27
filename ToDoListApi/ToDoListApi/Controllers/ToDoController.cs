@@ -9,13 +9,11 @@ using ToDoListApi.Model;
 namespace ToDoListApi
 {
     [Route("api/[controller]")]
-    public class ToDoController : Controller
-    {
+    public class ToDoController : Controller{
         private readonly ToDoContext _context;
         private readonly ToDoItem item;
 
-        public ToDoController(ToDoContext context)
-        {
+        public ToDoController(ToDoContext context){
             _context = context;
 
             if (_context.Items.Count() == 0)
@@ -36,22 +34,19 @@ namespace ToDoListApi
 
         // GET api/values
         [HttpGet]
-        public IEnumerable<ToDoItem> Get()
-        {
+        public IEnumerable<ToDoItem> Get(){
             return _context.Items;
         }
 
         // GET api/values/5
         [HttpGet("{id}", Name = "GetToDoItem")]
-        public async Task<IActionResult> Get([FromRoute] int id)
-        {
-            // Comprobar si los parametros recibidos son correctos api/1 o api/abc
+        public async Task<IActionResult> Get([FromRoute] int id){
+            // COmprueba si los parametros que recibe son correctos api/1 o api/abc
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-
-            // Proceso asincrono para obtener resultados de la base de datos
+            // Proceso asincrono para obtener result de la BBDD
             var item = await _context.Items.SingleOrDefaultAsync(x => x.Id == id);
 
             if (item == null)
@@ -64,8 +59,7 @@ namespace ToDoListApi
 
         // POST api/values
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody]ToDoItem item)
-        {
+        public async Task<IActionResult> Post([FromBody]ToDoItem item){
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -79,23 +73,19 @@ namespace ToDoListApi
 
         // PUT api/values/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put([FromRoute]int id, [FromBody]ToDoItem item)
-        {
-            if (!ModelState.IsValid || id != item.Id)
-            {
+        public async Task<IActionResult> Put([FromRoute]int id, [FromBody]ToDoItem item){
+            if (!ModelState.IsValid || id != item.Id){
                 return BadRequest(ModelState);
             }
 
             _context.Entry(item).State = EntityState.Modified;
 
-            try
-            {
+            try{
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (_context.Items.Any(x => x.Id == id))
-                {
+                if (_context.Items.Any(x => x.Id == id)){
                     return NotFound();
                 }
                 else
@@ -106,7 +96,6 @@ namespace ToDoListApi
 
             return NoContent();
         }
-
         // DELETE api/values/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
